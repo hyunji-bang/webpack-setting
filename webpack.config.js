@@ -2,6 +2,7 @@
 
 module.exports = {
     // webpack 설정 코드 작성. 작성된 코드는 module.export로 내보냅니다.
+    mode: 'development',
     module: { //옵션은 번들링과정에서 진행할 규칙을 정의하는 지점
         rules: [
             {
