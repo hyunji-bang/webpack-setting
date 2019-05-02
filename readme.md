@@ -23,20 +23,23 @@
     - 웹팩4부터는 webpack-cli를 같이 설치해줘야만, 커맨드라인에서 webpack이란 명령어를 사용가능
     - 입력 후 package.json의 devDependencies에 webpack과 wepack-cli가 설치된것을 볼 수 있음. + node_modules 생성됨.
 
-3. ```npm install --save-dev @babel/core babel-loader```
+3. ```npm install --save-dev @babel/core @babel/cli babel-loader```
     - babel-core: 바벨을 사용하기 위한 필수 라이브러리
+    - babel-cli: command line을 통해 코드를 transpile 할 수 있도록 함. (설치하면   ```babel src/index.js --out-file dist/index.js```와 같은 명령어로 트랜스파일링 가능해짐.
     - babel-loader: 웹팩에 연결하기 위해 로더를 설치해야 함.
     - webpack 4.x | babel 7.x | babel-loader 8.x 설치 방법.
     - babel 7 버전부터 모든 바벨 패키지들이 @babel이라는 네임스페이스 안에 속하게 됨.
     - 만약 babel 6.x | babel-loader 7.x 로 설치하고 싶다면, ```babel-core babel-loader@7``` 로 입력해야함
 
 4. ```npm install --save-dev @babel/preset-env```
-    -  브라우저에 필요한 ecmascript 버전을 자동으로 파악해서 알아서 polyfill을 넣어줍니다. 
+    - 브라우저에 필요한 ecmascript 버전을 자동으로 파악해서 알아서 polyfill을 넣어줌.
     - 버전별로 필요한 기능들을 플러그인들을 모아놓은 셋트. 
+    - Babel 프리셋에는 @babel/preset-typescript, @babel/preset-react 등이 있다.
     - 기능별로 플러그인들을 개별적으로 설치하려면 번거롭기 때문에, 이 명령어로 프리셋과 플러그인들을 모아서 관리하고 있는 모듈 설치가 가능.
       ```
       //----------package.json
       "devDependencies": {
+        "@babel/cli": "^7.4.4",
         "@babel/core": "^7.1.0",
         "@babel/preset-env": "^7.1.0",
         "babel-loader": "^8.0.2",
@@ -49,6 +52,7 @@
       ```
       //----------package.json
       "devDependencies": {
+        "@babel/cli": "^7.4.4",
         "@babel/core": "^7.1.0",
         "@babel/preset-env": "^7.1.0",
         "@babel/preset-react": "^7.0.0",
@@ -63,10 +67,10 @@
     - css-loader: 스타일시트를 webpack이 읽어들일 수 있는 자바스크립트 파일로 변환시켜 주는 loader
     - style-loader: 자바스크립트로 변경된 css를 DOM에 추가해주는 loader
 
-6-2.  ```npm install node-sass sass-loader --save-dev```
+7.  ```npm install node-sass sass-loader --save-dev```
     - node-sass는 scss를 다를 수 있는 node program이고, sass-loader는 webpack에 필요한 loader이다.
     
-7. ```npm install html-webpack-plugin --save-dev```
+8. ```npm install html-webpack-plugin --save-dev```
     - 기본적으로, bundle한 css, js파일들은 html파일에 직접 추가해야하는데 html-webpack-plugin를 사용하면 이 과정을 자동화 가능.
 
 >src 디렉토리를 만들어 index.js 파일을 생성 후 최신 자바스크립트 문법을 작성해본 뒤. 이때 npm run build로 실행해보면 해보면, dist 폴더 내부의 main.js에 트랜스파일링 된 것을 확인 할 수 있다
@@ -113,24 +117,27 @@
   }
   ```
   - ```@babel/preset-env```
+      - ```npm install --save-dev @babel/preset-env``` 명령어로 기본셋팅 설치 해준것이 선수된 후, ```@babel/preset-env```를 babelrc 파일에 추가함
       - babel 7부터는 preset-es2015 같은거 쓰지않고 전부 @babel/preset-env로 통일
       - 이걸 설치하면 babel-preset-latest 라고 불리는 현재 지원 가능한 가장 최신 버전의 프리셋을 사용하고 추가로 프로젝트의 지원 브라우저를 기반으로 폴리필과 필요 트랜스폼 플러그인들을 관리할 수 있는 옵션들을 사용할 수 있음.
       - 타겟 브라우저를 입력하면 알아서 사용자가 환경에 맞춰 최신 EcmaScript를 사용할 수 있게 해주므로 매우 편리하기 때문에 이 설정을 쓰는것이 좋음.
   - ```@babel/preset-react``` 
       - react 환경(jsx)을 위한 프리셋.
-      
-------------------------------------------------------------------
+
 
 #### babel-polyfill 
 > [https://medium.com/@ljs0705/babel-%EC%9D%B4%ED%95%B4%ED%95%98%EA%B8%B0-a1d0e6bd021a]
 
 > [https://programmingsummaries.tistory.com/401]
 
-- babel을 사용한다고 자바스크립트 최신 함수를 사용할 수 있는 건 아니다. polyfill은 프로그램이 처음에 시작될 때 현재 브라우저에서 지원하지 않는 함수를 검사해서 각 object의 prototype에 붙여주는 역할을 한다. 즉, babel은 컴파일-타임에 실행되고 babel-polyfill은 런-타임에 실행된다.
-- Promise, Map, Set과 같은 새롭게 추가된 전역객체들 같은 경우는 트랜스파일링으로 해결하기 어렵기 때문에 Babel 기반에서는 babel-polyfill이나 babel-plugin-transform-runtime을 사용한다.
-  *  ```npm install --save babel-polyfill``` 로 설치
-      
-      
+  ```npm install @babel/polyfill``` 로 설치
+
+- babel을 사용한다고 자바스크립트 최신 함수를 사용할 수 있는게 아니다. ES5 이하로 트랜스파일링하여도 대체할 ES5 기능이 없기 때문에 브라우저가 지원하지 않는 코드가 남아 있을 수 있다.
+ 
+- polyfill은 프로그램이 처음에 시작될 때 현재 브라우저에서 지원하지 않는 함수를 검사해서 각 object의 prototype에 붙여주는 역할을 한다. 즉, babel은 컴파일-타임에 실행되고 babel-polyfill은 런-타임에 실행된다.
+
+- Promise, Map, Set과 같은 새롭게 추가된 전역객체들 같은 경우는 트랜스파일링으로 해결하기 어려운 예로, Babel 기반에서는 babel-polyfill이나 babel-plugin-transform-runtime을 사용한다.
+
 
 
 ### Step3. webpack.config.js (웹팩설정)
@@ -216,7 +223,6 @@ module.exports = {
 * 모드가 생겨 일정한 규칙만 지키면 설정 파일(webpack.config.js)이 없이도 빌드가 가능하게 되었다. (0CJS라고 함. Production / Development. 간편하긴 하지만 실무에서는 세부설정이 필요함)
 * 빌드 속도가 빨라진다.
 * webpack 코어와 webpack-cli 가 분리 배포 된다.
-
 
 
 
